@@ -42,11 +42,11 @@ public class Font extends RollingEntity {
     Font(Commander parent, FontBuilder fontBuilder) {
         super(parent);
 
-        this.lineMargin = fontBuilder.getLineMargin();
-        this.topMargin = fontBuilder.getTopMargin();
-        this.charSpace = fontBuilder.getCharSpace();
-        this.lineSpace = fontBuilder.getLineSpace();
-        this.scroll = fontBuilder.getScroll();
+        lineMargin = fontBuilder.getLineMargin();
+        topMargin = fontBuilder.getTopMargin();
+        charSpace = fontBuilder.getCharSpace();
+        lineSpace = fontBuilder.getLineSpace();
+        scroll = fontBuilder.getScroll();
     }
 
     public void setCurrent() {
@@ -58,19 +58,19 @@ public class Font extends RollingEntity {
 
     private void setFontMetrics() {
         send(FontCommands.setFontMetrics(
-                currentLineMargin = this.lineMargin,
-                currentTopMargin = this.topMargin,
-                currentCharSpace = this.charSpace,
-                currentLineSpace = this.lineSpace,
-                currentScroll = this.scroll
+                currentLineMargin = lineMargin,
+                currentTopMargin = topMargin,
+                currentCharSpace = charSpace,
+                currentLineSpace = lineSpace,
+                currentScroll = scroll
         ));
     }
 
     private boolean areFontMetricsDefault() {
-        return currentLineMargin == this.lineMargin &&
-                currentTopMargin == this.topMargin &&
-                currentCharSpace == this.charSpace &&
-                currentLineSpace == this.lineSpace &&
-                currentScroll == this.scroll;
+        return currentLineMargin == lineMargin &&
+                currentTopMargin == topMargin &&
+                currentCharSpace == charSpace &&
+                currentLineSpace == lineSpace &&
+                currentScroll == scroll;
     }
 }

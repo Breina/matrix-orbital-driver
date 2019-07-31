@@ -4,7 +4,7 @@ import api.Commander;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-class Ellipse extends Commander {
+public class Ellipse extends Commander {
 
     private final int x, y, xRadius, yRadius;
 

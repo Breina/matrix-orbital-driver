@@ -1,4 +1,4 @@
-package api.bitmaps;
+package api.bitmap;
 
 import api.Commander;
 import api.util.RollingID;

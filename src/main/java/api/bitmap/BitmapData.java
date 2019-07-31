@@ -1,4 +1,4 @@
-package api.bitmaps;
+package api.bitmap;
 
 import lombok.NonNull;
 

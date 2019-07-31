@@ -3,9 +3,7 @@ package api.util;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-import com.google.common.cache.RemovalNotification;
 
-import java.util.HashMap;
 import java.util.function.Consumer;
 
 public class RollingID<T extends RollingEntity> {
@@ -21,12 +19,9 @@ public class RollingID<T extends RollingEntity> {
         entities = CacheBuilder.newBuilder()
                 .maximumSize(maxEntities)
                 .weakValues()
-                .removalListener(new RemovalListener<Byte, T>() {
-                    @Override
-                    public void onRemoval(RemovalNotification<Byte, T> notification) {
-                        entityCount--;
-                        notification.getValue().remove();
-                    }
+                .removalListener((RemovalListener<Byte, T>) notification -> {
+                    entityCount--;
+                    notification.getValue().remove();
                 })
                 .build();
     }
@@ -42,19 +37,21 @@ public class RollingID<T extends RollingEntity> {
 
         entities.put(id, entity);
         entityCount++;
+        entity.setId(id);
         entity.setOnRemove(() -> deregister(id));
         return entity;
     }
 
     public T register(T entity) {
-        return register(id -> {}, entity);
+        return register(id -> {
+        }, entity);
     }
 
     private byte getNextAvailableId() {
         if (entityCount == maxId) {
             throw new IndexOutOfBoundsException("All 8 slots for graphs are taken. Please remove some before creating new ones.");
         }
-        while (entities.getIfPresent(entityIndexCounter++) != null) {
+        while (entities.getIfPresent(++entityIndexCounter) != null) {
             entityIndexCounter %= maxId;
         }
         return entityIndexCounter;

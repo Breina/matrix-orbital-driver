@@ -22,6 +22,8 @@ public abstract class RollingEntity extends Commander {
      * Removes this object and frees the ID to be used by others.
      */
     public void remove() {
-        onRemove.run();
+        if (onRemove != null) {
+            onRemove.run();
+        }
     }
 }

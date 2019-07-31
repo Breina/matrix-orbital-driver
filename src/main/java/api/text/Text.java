@@ -1,14 +1,21 @@
 package api.text;
 
+import api.CommunicationException;
 import api.Commander;
-import api.communication.SoftwareControlFlow;
 import api.font.Font;
 import api.util.RollingID;
 import lombok.Getter;
+import lombok.experimental.Accessors;
+
+import java.awt.*;
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class Text extends Commander {
 
     @Getter(lazy = true)
+    @Accessors(fluent = true)
     private final Cursor cursor = new Cursor(this);
 
     private RollingID<TextWindow> textWindows = new RollingID<>(16);
@@ -32,9 +39,16 @@ public class Text extends Commander {
      *
      * @return Byte(s) Width and height of the string in pixels. A width greater than the screen will return 0.
      */
-    public void getStringExtents(String text) {
+    public Dimension getStringExtents(String text) throws CommunicationException {
+        Future<Byte> width = getInput().expect();
+        Future<Byte> height = getInput().expect();
+
         send(TextCommands.getStringExtents(text));
-        throw new RuntimeException("Not implemented");
+        try {
+            return new Dimension(width.get(), height.get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new CommunicationException(e);
+        }
     }
 
     /**

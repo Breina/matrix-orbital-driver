@@ -4,8 +4,12 @@ import api.Commander;
 import commands.Util;
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+@Log4j2
 public class Communication extends Commander {
 
     private Protocol transmissionProtocol;
@@ -97,10 +101,15 @@ public class Communication extends Commander {
      *
      * @return Byte(s) The same arbitrary array of data originally sent.
      */
-    public synchronized byte[] echo(byte[] data) {
+    public synchronized Byte[] echo(byte[] data) {
+        Future<Byte[]> expect = getInput().expectBytes(data.length);
         send(CommunicationCommands.echo(data));
-        getInput().blockUntilReceived(data);
-        return data;
+        try {
+            return expect.get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e);
+            return null;
+        }
     }
 
     /**
@@ -116,9 +125,17 @@ public class Communication extends Commander {
      * Reset the display as if power had been cycled via a software command. No commands should be sent while the
      * unit is in the process of resetting; a response will be returned to indicate the unit has successfully been reset.
      */
-    public synchronized void reset() {
+    public void reset() {
+        Future<Byte> r0 = getInput().expect(Util.hex("FE"));
+        Future<Byte> r1 = getInput().expect(Util.hex("D4"));
         send(CommunicationCommands.reset());
-        getInput().blockUntilReceived(Util.hex("FE"), Util.hex("D4"));
+
+        try {
+            r0.get();
+            r1.get();
+        } catch (InterruptedException | ExecutionException e) {
+            log.error(e);
+        }
     }
 
     private void checkI2CProtocol() {

@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 import java.util.function.Supplier;
 
-class Rectangle extends Commander {
+public class Rectangle extends Commander {
 
     private final int x0, y0, x1, y1;
     private final Supplier<Boolean> foregroundGetter;

@@ -4,10 +4,12 @@ import api.Commander;
 import api.nineslice.NineSlice;
 import api.util.RollingID;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
 public class Drawing extends Commander {
 
     @Getter(lazy = true)
+    @Accessors(fluent = true)
     private final Drawer drawer = new Drawer(this);
 
     private RollingID<Bar> barGraphs = new RollingID<>(256);
@@ -60,7 +62,7 @@ public class Drawing extends Commander {
 
     /**
      * Initialize a 9-slice bar graph in memory for later implementation. 9-slice graphs are also be filled using the Draw a
-     * Bar Graph command and are allocated to the same memory as regular bitmaps.
+     * Bar Graph command and are allocated to the same memory as regular bitmap.
      *
      * @param type Byte Graph style, see Bar Graph Types.
      * @param x0 Byte Leftmost coordinate of the 9-slice bar, zero indexed from left.

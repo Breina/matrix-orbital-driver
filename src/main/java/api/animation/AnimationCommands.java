@@ -1,4 +1,4 @@
-package api.animations;
+package api.animation;
 
 import com.google.common.primitives.Bytes;
 import commands.AbstractCommands;

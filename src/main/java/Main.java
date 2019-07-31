@@ -6,8 +6,8 @@ public class Main {
 
         System.setProperty("log4j.configurationFile", "log4j.xml");
 
-        new Communicator();
-//        new Communicator().test();
+        Communicator communicator = new Communicator();
+        communicator.test();
 //        new Communicator().reset();
     }
 }

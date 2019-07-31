@@ -4,7 +4,7 @@ import api.Commander;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-class Circle extends Commander {
+public class Circle extends Commander {
 
     private final int x, y, radius;
 

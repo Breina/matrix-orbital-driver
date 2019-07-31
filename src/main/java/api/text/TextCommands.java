@@ -7,15 +7,20 @@ import commands.CommonCommands;
 import commands.Util;
 import lombok.experimental.UtilityClass;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 @UtilityClass
 class TextCommands extends AbstractCommands {
+
+    private static final Charset CHARSET = StandardCharsets.US_ASCII;
 
     private final int
             CHARACTER_WIDTH = 6,
             CHARACTER_HEIGHT = 8;
 
     byte[] write(String text) {
-        return text.getBytes();
+        return text.getBytes(CHARSET);
     }
 
     byte[] clear() {
@@ -38,7 +43,7 @@ class TextCommands extends AbstractCommands {
     }
 
     byte[] getStringExtents(String text) {
-        return Bytes.concat(chain("29"), text.getBytes(), new byte[]{0});
+        return Bytes.concat(chain("29"), text.getBytes(CHARSET), new byte[]{0});
     }
 
     byte[] initializeTextWindow(int id, int x1, int y1, int x2, int y2, Font font, int charSpace, int lineSpace, int scroll) {
@@ -68,7 +73,7 @@ class TextCommands extends AbstractCommands {
                 x2, 1, y2, 1,
                 vertPos.getId(), 1,
                 horPos.getId(), 1,
-                font.getId(), 2,
+                font == null ? 1 : font.getId(), 2,
                 Util.boolToByte(background), 1,
                 charspace, 1);
     }
@@ -83,7 +88,7 @@ class TextCommands extends AbstractCommands {
                 x2, 1, y2, 1,
                 vertPos.getId(), 1,
                 direction.getId(), 1,
-                font.getId(), 2,
+                font == null ? 1 : font.getId(), 2,
                 Util.boolToByte(background), 1,
                 charspace, 1,
                 delayMs, 2);
@@ -91,7 +96,7 @@ class TextCommands extends AbstractCommands {
 
     byte[] updateLabel(int id, String text) {
         checkRange(id, 0, 15);
-        return Bytes.concat(chain("2E", id, 1), text.getBytes(), new byte[]{0});
+        return Bytes.concat(chain("2E", id, 1), text.getBytes(CHARSET), new byte[]{0});
     }
 
     byte[] autoScrollOn() {

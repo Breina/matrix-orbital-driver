@@ -1,25 +1,30 @@
 package api;
 
-import input.Input;
+import input.InputEventHandler;
 import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.function.Consumer;
 
-public abstract class Commander {
+public class Commander {
 
     @Getter(AccessLevel.PRIVATE)
-    private Consumer<byte[]> commandConsumer;
+    private final Consumer<byte[]> commandConsumer;
 
     @Getter(AccessLevel.PROTECTED)
-    private Input input;
+    private final InputEventHandler input;
 
-    public Commander(Commander parent) {
-        this.commandConsumer = parent.getCommandConsumer();
-        this.input = parent.getInput();
+    public Commander(Consumer<byte[]> runCommand, InputEventHandler input) {
+        this.commandConsumer = runCommand;
+        this.input = input;
+    }
+
+    protected Commander(Commander parent) {
+        commandConsumer = parent.getCommandConsumer();
+        input = parent.getInput();
     }
 
     protected void send(byte[] command) {
-        this.commandConsumer.accept(command);
+        commandConsumer.accept(command);
     }
 }

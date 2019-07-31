@@ -1,4 +1,4 @@
-package api.animations;
+package api.animation;
 
 import api.Commander;
 import api.filesystem.File;
@@ -19,7 +19,7 @@ public class Animations extends Commander {
     /**
      * Upload an animation file to a graphic display. To create an animation see the Animation File Creation section, for
      * upload protocol see the File Transfer Protocol or XModem Transfer Protocol entries. Up to
-     * 16 animations can be displayed on the screen at one time, using the Display Animation command, but up to 1024
+     * 16 animation can be displayed on the screen at one time, using the Display Animation command, but up to 1024
      * can be stored in memory for later use. Please note the total graphic memory size is 256KB.
      *
      * @param data Byte(s) Animation file data, see the Animation File Creation example.

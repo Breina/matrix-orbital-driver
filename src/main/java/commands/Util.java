@@ -1,6 +1,10 @@
 package commands;
 
-public class Util {
+public final class Util {
+    private Util() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+    }
+
     public static byte hex(String hex) {
         int length = hex.length();
         if (length > 2)

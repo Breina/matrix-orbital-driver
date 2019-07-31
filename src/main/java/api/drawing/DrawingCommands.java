@@ -94,7 +94,7 @@ class DrawingCommands extends AbstractCommands {
 
     byte[] drawBarGraph(int id, int value) {
         checkRange(id, 0, 255);
-        return chain("69", value, 1);
+        return chain("69", id, 1, value, 1);
     }
 
     byte[] initializeStripChart(int id, int x1, int y1, int x2, int y2, int min, int max, int step, ChartDirection direction, ChartType type, int nineSliceFileID) {

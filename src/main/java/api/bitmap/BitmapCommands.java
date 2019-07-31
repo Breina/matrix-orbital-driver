@@ -1,4 +1,4 @@
-package api.bitmaps;
+package api.bitmap;
 
 import com.google.common.primitives.Bytes;
 import commands.AbstractCommands;

@@ -35,7 +35,7 @@ public class NineSlices extends Commander {
      *
      * @return The {@link NineSlice} mask instance.
      */
-    public NineSlice createNineSliceMaskj(byte[] data) {
+    public NineSlice createNineSliceMask(byte[] data) {
         return nineSlices.register(
                 id -> NineSliceCommands.upload9SliceMask(id, data),
                 new NineSlice(this)

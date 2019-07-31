@@ -1,10 +1,9 @@
-import com.fazecast.jSerialComm.SerialPort;
+import api.CommunicationException;
 import api.communication.BaudRate;
+import com.fazecast.jSerialComm.SerialPort;
 import input.InputHandler;
 import input.ReadHandler;
 import lombok.extern.log4j.Log4j2;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +33,7 @@ public class COMWrapper {
             if (serialPort.getDescriptivePortName().startsWith(DEVICE_NAME))
                 return serialPort;
 
-        throw new CommunicationException(log, "No COM port found.");
+        throw new CommunicationException("No COM port found.");
     }
 
     private void printPortInformation() {
@@ -46,7 +45,7 @@ public class COMWrapper {
     private void setup() throws CommunicationException {
         boolean success = port.openPort();
         if (!success)
-            throw new CommunicationException(log, "Could not open port");
+            throw new CommunicationException("Could not open port");
 
         log.info("Port opened");
 

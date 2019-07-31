@@ -1,4 +1,4 @@
-package api.animations;
+package api.animation;
 
 import api.Commander;
 import api.filesystem.File;
@@ -64,10 +64,5 @@ public class Animation extends RollingEntity {
     private void checkDisplaying() {
         if (!isDisplaying)
             throw new IllegalArgumentException("Please call Animation#display before calling this method.");
-    }
-
-    @Override
-    public void remove() {
-        super.remove();
     }
 }
