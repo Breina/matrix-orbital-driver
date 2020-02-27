@@ -1,7 +1,8 @@
 package input;
 
-import lombok.AccessLevel;
+import commands.Util;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -13,14 +14,32 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
 
 import static util.StringUtil.formatBinary;
 
 @Log4j2
 public class InputEventHandler implements ReadHandler {
 
+    private static final byte
+            DEFAULT_VK_TOP = Util.hex("41"),
+            DEFAULT_VK_UP = Util.hex("42"),
+            DEFAULT_VK_RIGHT = Util.hex("43"),
+            DEFAULT_VK_LEFT = Util.hex("44"),
+            DEFAULT_VK_CENTER = Util.hex("45"),
+            DEFAULT_VK_DOWN = Util.hex("48"),
+            DEFAULT_VK_BOTTOM = Util.hex("47");
     private final Queue<InputEvent[]> keyListeners;
+
+    @Getter
+    @Accessors(fluent = true)
+    private byte
+            vk_top = DEFAULT_VK_TOP,
+            vk_up = DEFAULT_VK_UP,
+            vk_right = DEFAULT_VK_RIGHT,
+            vk_left = DEFAULT_VK_LEFT,
+            vk_center = DEFAULT_VK_CENTER,
+            vk_down = DEFAULT_VK_DOWN,
+            vk_bottom = DEFAULT_VK_BOTTOM;
 
     public InputEventHandler() {
         keyListeners = new ConcurrentLinkedDeque<>();
@@ -100,25 +119,6 @@ public class InputEventHandler implements ReadHandler {
             }
 
             keyListeners.remove();
-        }
-    }
-
-    public static class InputEvent {
-        @Getter(AccessLevel.PRIVATE)
-        private final byte[] keys;
-        private final Consumer<Byte> action;
-
-        public InputEvent(Consumer<Byte> action, byte... keys) {
-            this.keys = keys;
-            this.action = action;
-        }
-
-        boolean visit(byte b) {
-            if (keys.length == 0 || Arrays.binarySearch(keys, b) != -1) {
-                action.accept(b);
-                return true;
-            }
-            return false;
         }
     }
 }

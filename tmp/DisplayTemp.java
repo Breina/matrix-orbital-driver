@@ -16,9 +16,10 @@
 
 // Stamp core basic classes
 import stamp.core.*;
+import stamp.peripheral.sensor.temperature.DS1620;
+
 // This class encapsulates the basic capabilities of the Dallas DS1620 3-wire
 // temperature sensor
-import stamp.peripheral.sensor.temperature.DS1620;
 
 public class DisplayTemp {
 

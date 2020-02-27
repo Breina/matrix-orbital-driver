@@ -15,10 +15,6 @@ class TextCommands extends AbstractCommands {
 
     private static final Charset CHARSET = StandardCharsets.US_ASCII;
 
-    private final int
-            CHARACTER_WIDTH = 6,
-            CHARACTER_HEIGHT = 8;
-
     byte[] write(String text) {
         return text.getBytes(CHARSET);
     }
@@ -32,8 +28,6 @@ class TextCommands extends AbstractCommands {
     }
 
     byte[] setCursorPosition(int characterColumn, int characterRow) {
-        checkRange(characterColumn, 1, 192 / CHARACTER_WIDTH);
-        checkRange(characterRow, 1, 64 / CHARACTER_HEIGHT);
         return chain("47", characterColumn, 1, characterRow, 1);
     }
 

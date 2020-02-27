@@ -1,5 +1,7 @@
 package commands;
 
+import api.display.Display;
+
 import static commands.Util.hex;
 import static commands.Util.intToBytes;
 import static commands.Util.shortToBytes;
@@ -31,8 +33,8 @@ public abstract class AbstractCommands {
     }
 
     protected static void checkBounds(int x, int y) {
-        checkRange(x, 1, 192);
-        checkRange(y, 1, 64);
+        checkRange(x, 1, Display.WIDTH);
+        checkRange(y, 1, Display.HEIGHT);
     }
 
     protected static void checkBounds(int x1, int y1, int x2, int y2, boolean checkOrder) {

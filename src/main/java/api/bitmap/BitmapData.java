@@ -1,5 +1,6 @@
 package api.bitmap;
 
+import api.display.Display;
 import lombok.NonNull;
 
 import java.awt.image.BufferedImage;
@@ -73,7 +74,7 @@ public class BitmapData {
     }
 
     private void checkSize(int width, int height) {
-        if (width > 192 || height > 64)
+        if (width > Display.WIDTH || height > Display.HEIGHT)
             throw new IllegalArgumentException("The bitmap can be no larger than 192x64.");
     }
 }

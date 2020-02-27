@@ -1,7 +1,3 @@
-import jdk.nashorn.internal.ir.annotations.Ignore;
-
-import java.io.*;
-import java.util.*;
 import javax.comm.*;
 
 /**

@@ -1,45 +1,106 @@
 package ui;
 
 import api.API;
-import api.CommunicationException;
-import api.text.*;
+import api.display.Display;
+import api.drawing.Drawer;
+import api.drawing.Drawing;
 import api.text.Label;
+import api.text.*;
+import com.CommunicationException;
+import input.InputEvent;
+import input.InputEventHandler;
 
 import java.awt.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public class Menu {
 
     private static final int LEFT_MARK_SPACE = 10;
     private static final int MAX_WIDTH = 180;
-    private static final int MAX_STRING_WIDTH = MAX_WIDTH - LEFT_MARK_SPACE;
-
+    //    private static final String CURSOR = ">";
+    private static final String CURSOR = new String(new byte[]{29}, US_ASCII);
     private final API api;
+    private final Text textApi;
+    private final Drawing drawing;
+    private final Drawer drawer;
+    private final InputEventHandler input;
 
-    public Menu(API api) {
+    public Menu(API api, InputEventHandler input) {
         this.api = api;
+        textApi = api.text();
+        drawing = api.drawing();
+        drawer = drawing.drawer();
+
+        this.input = input;
     }
 
-    public int show(String... options) throws CommunicationException {
+    public void show(String titleText, String... options) throws CommunicationException {
+        assert options.length >= 2 : "What's the point of a menu otherwise?";
 
-        Text textApi = api.text();
-        int yPos = 1;
-        for (String option : options) {
+        Label title = createLabel(titleText, 1, 1);
+        int currentY = title.getyBottom() + 1;
 
-            Dimension dimension = textApi.getStringExtents(option);
+        drawer.setDrawingColor(true);
+        drawer.line(1, currentY, MAX_WIDTH, currentY);
 
-            int yBottom = yPos + dimension.height;
-            Label label;
-            if (dimension.width <= MAX_STRING_WIDTH && dimension.width != 0) {
-                label = textApi.createNewLabel(LEFT_MARK_SPACE, yPos, MAX_WIDTH, yBottom, VertPos.TOP, HorPos.LEFT, null, false, 0);
-            } else {
-                label = textApi.createNewScrollingLabel(LEFT_MARK_SPACE, yPos, MAX_WIDTH, yBottom, VertPos.TOP, Direction.LEFT, null, false, 0, 50);
-            }
+        Dimension selectionDimension = textApi.getStringExtents(CURSOR);
+        int indentWidth = selectionDimension.width + 1;
+        final int textHeight = selectionDimension.height;
+        currentY += 2;
 
-            label.setText(option);
+        final int lineHeight = textHeight + 1;
+        int shownMenuOptions = Math.min(
+                options.length,
+                (Display.HEIGHT - currentY) / lineHeight
+        );
+        Label[] selectionBoxes = new Label[shownMenuOptions];
+        Label[] menuItems = new Label[shownMenuOptions];
 
-            yPos = yBottom;
+        for (int i = 0; i < shownMenuOptions; i++) {
+            int yBottom = currentY + textHeight;
+            selectionBoxes[i] = textApi.createNewLabel(1, currentY, selectionDimension.width, yBottom, VertPos.TOP, HorPos.LEFT, null, false, 0);
+
+            menuItems[i] = createLabel(options[i], indentWidth, currentY);
+            currentY += lineHeight;
         }
 
-        return -1;
+        int currentOption = 0;
+
+        for (; ; ) {
+            selectionBoxes[currentOption].setText(CURSOR);
+
+            final byte up = input.vk_up();
+            final byte down = input.vk_down();
+
+            Future<Byte> keyEvent = input.expect(up, down);
+            Byte key = null;
+            try {
+                key = keyEvent.get();
+            } catch (InterruptedException | ExecutionException e) {
+                throw new CommunicationException(e);
+            }
+
+            selectionBoxes[currentOption].setText("");
+            if (key == up) {
+                currentOption = Math.max(currentOption - 1, 0);
+            } else {
+                currentOption = Math.min(currentOption + 1, shownMenuOptions - 1);
+            }
+        }
+
+//        return -1;
+    }
+
+    private Label createLabel(String text, int xLeft, int yTop) throws CommunicationException {
+        Dimension dimension = textApi.getStringExtents(text);
+        int yBottom = yTop + dimension.height;
+        Label label = dimension.width + xLeft <= Display.WIDTH && dimension.width != 0
+                ? textApi.createNewLabel(xLeft, yTop, MAX_WIDTH, yBottom, VertPos.TOP, HorPos.LEFT, null, false, 0)
+                : textApi.createNewScrollingLabel(xLeft, yTop, MAX_WIDTH, yBottom, VertPos.TOP, Direction.LEFT, null, false, 0, 20);
+        label.setText(text);
+        return label;
     }
 }

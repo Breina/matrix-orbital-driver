@@ -2,11 +2,18 @@ package api.text;
 
 import api.Commander;
 import api.util.RollingEntity;
+import lombok.NonNull;
 
 public class Label extends RollingEntity {
 
-    Label(Commander parent) {
+    private final int xLeft, yTop, xRight, yBottom;
+
+    Label(Commander parent, int xLeft, int yTop, int xRight, int yBottom) {
         super(parent);
+        this.xLeft = xLeft;
+        this.yTop = yTop;
+        this.xRight = xRight;
+        this.yBottom = yBottom;
     }
 
     /**
@@ -16,5 +23,21 @@ public class Label extends RollingEntity {
      */
     public void setText(String text) {
         send(TextCommands.updateLabel(getId(), text));
+    }
+
+    public int getxLeft() {
+        return xLeft;
+    }
+
+    public int getyTop() {
+        return yTop;
+    }
+
+    public int getxRight() {
+        return xRight;
+    }
+
+    public int getyBottom() {
+        return yBottom;
     }
 }

@@ -6,6 +6,8 @@ import java.awt.*;
 
 public class Display extends Commander {
 
+    public static final int WIDTH = 192, HEIGHT = 64;
+
     public Display(Commander parent) {
         super(parent);
     }

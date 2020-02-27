@@ -1,7 +1,7 @@
 package api.buzzer;
 
 import api.Commander;
-import api.CommunicationException;
+import com.CommunicationException;
 
 import java.io.IOException;
 

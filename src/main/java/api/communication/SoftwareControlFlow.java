@@ -1,19 +1,22 @@
 package api.communication;
 
 import api.Commander;
+import com.ComPort;
 
 public class SoftwareControlFlow extends Commander {
 
     private static final byte
             DEFAULT_XON = (byte) 0xFF, DEFAULT_XOFF = (byte) 0xFE,
-            STANDARD_XON = 0x11, STANDARD_XOFF = 0x13;
+    STANDARD_XON = 0x11, STANDARD_XOFF = 0x13;
 
+    private final ComPort comPort;
     private byte
             xOn = DEFAULT_XON,
             xOff = DEFAULT_XOFF;
 
-    public SoftwareControlFlow(Commander parent) {
+    SoftwareControlFlow(Commander parent, ComPort comPort) {
         super(parent);
+        this.comPort = comPort;
     }
 
     /**

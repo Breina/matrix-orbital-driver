@@ -1,6 +1,7 @@
 package api.communication;
 
 import api.Commander;
+import com.ComPort;
 import commands.Util;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,13 +13,15 @@ import java.util.concurrent.Future;
 @Log4j2
 public class Communication extends Commander {
 
+    private final ComPort comPort;
     private Protocol transmissionProtocol;
 
     @Getter(lazy = true, value = AccessLevel.PRIVATE)
-    private final SoftwareControlFlow softwareControlFlow = new SoftwareControlFlow(this);
+    private final SoftwareControlFlow softwareControlFlow = new SoftwareControlFlow(this, comPort);
 
-    public Communication(Commander parent) {
+    public Communication(Commander parent, ComPort comPort) {
         super(parent);
+        this.comPort = comPort;
     }
 
     /**
@@ -30,6 +33,7 @@ public class Communication extends Commander {
     public void changeBaudRate(BaudRate baudRate) {
         checkI2CProtocol();
         send(CommunicationCommands.changeBaudRate(baudRate));
+        comPort.setBaudRate(baudRate.getBaud());
     }
 
     /**
@@ -62,6 +66,7 @@ public class Communication extends Commander {
     public void setNonStandardBaudRate(int baudRate) {
         checkI2CProtocol();
         send(CommunicationCommands.setNonStandardBaudRate(baudRate));
+        comPort.setBaudRate(baudRate);
     }
 
     /**
@@ -69,6 +74,7 @@ public class Communication extends Commander {
      */
     public void disableControlFlow() {
         send(CommunicationCommands.setFlowControlMode(ControlFlowMode.NONE));
+        comPort.useHardwareControlFlow(false);
     }
 
     /**
@@ -80,6 +86,8 @@ public class Communication extends Commander {
     public void enableHardwareControlFlow(HardwareControlFlowTriggerLevel triggerLevel) {
         send(CommunicationCommands.setFlowControlMode(ControlFlowMode.HARDWARE));
         send(CommunicationCommands.setHardwareFlowControlTriggerLevel(triggerLevel));
+
+        comPort.useHardwareControlFlow(true);
     }
 
     /**
@@ -90,6 +98,7 @@ public class Communication extends Commander {
     public SoftwareControlFlow enableSoftwareControlFlow() {
         checkI2CProtocol();
         send(CommunicationCommands.setFlowControlMode(ControlFlowMode.SOFTWARE));
+        comPort.useHardwareControlFlow(false);
 
         return getSoftwareControlFlow();
     }

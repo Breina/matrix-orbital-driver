@@ -1,10 +1,11 @@
 import api.API;
 import api.Commander;
-import api.CommunicationException;
 import api.communication.BaudRate;
 import api.communication.HardwareControlFlowTriggerLevel;
 import api.display.Display;
 import api.text.Cursor;
+import com.COMWrapper;
+import com.CommunicationException;
 import input.InputEventHandler;
 import lombok.extern.log4j.Log4j2;
 import ui.Menu;
@@ -19,10 +20,11 @@ public class Communicator {
     private static final BaudRate BAUD_RATE = BaudRate.RATE_115200;
 
     private final API api;
+    private final InputEventHandler input;
 
     public Communicator() throws CommunicationException {
         COMWrapper comWrapper = new COMWrapper();
-        InputEventHandler input = new InputEventHandler();
+        input = new InputEventHandler();
         comWrapper.setReadHandler(input);
 
         api = new API(new Commander(command -> {
@@ -32,13 +34,14 @@ public class Communicator {
             } catch (IOException e) {
                 log.error(e.getMessage());
             }
-        }, input));
+        }, input), comWrapper);
 
         setup();
     }
 
     private void setup() {
-
+        api.communication().reset();
+        api.communication().enableHardwareControlFlow(HardwareControlFlowTriggerLevel.BYTES_1);
 
 //        run(resetLCD());
 //        comWrapper.resetBaudRate();
@@ -53,8 +56,6 @@ public class Communicator {
 
     public void test() throws CommunicationException {
 
-        api.communication().reset();
-
         Display display = api.display();
         display.setBacklightColour(Color.WHITE);
 
@@ -62,7 +63,6 @@ public class Communicator {
 
         api.drawing().clear();
 
-        api.communication().enableHardwareControlFlow(HardwareControlFlowTriggerLevel.BYTES_14);
 
 
 //        Label label = api.text().createNewLabel(1, 1, 192, 64, VertPos.MIDDLE, HorPos.MIDDLE, null, false, 1);
@@ -74,9 +74,17 @@ public class Communicator {
 //            cursor.write(Character.toString(((char) i)));
 //        }
 
-        Menu menu = new Menu(api);
-        menu.show("First option", "Second option", "Third one", "88888888888888888888888888888888888888888888888888888888888", "Fourth option");
-//        menu.show("First option", "Second option", "Third one", "This one is super super long and won't fit on the screen at once", "Fourth option", "Fifth", "Sixth", "Seventh", "Eighth");
+        Menu menu = new Menu(api, input);
+        menu.show("Welcome to my first menu!",
+                "First option",
+                "Second option",
+                "Third one",
+//                "This one is super super long and won't fit on the screen at once",++
+                "Fourth option",
+                "Fifth",
+                "Sixth",
+                "Seventh",
+                "Eighth");
 
 
 //        api.drawing().drawer().ellipse(96, 32, 95, 31).filled(true).draw();
