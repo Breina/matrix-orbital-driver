@@ -1,16 +1,19 @@
 package com;
 
+import static com.fazecast.jSerialComm.SerialPort.FLOW_CONTROL_CTS_ENABLED;
+import static com.fazecast.jSerialComm.SerialPort.FLOW_CONTROL_DISABLED;
+import static com.fazecast.jSerialComm.SerialPort.FLOW_CONTROL_RTS_ENABLED;
+
+import api.Commander;
 import api.communication.BaudRate;
+import api.communication.Communication;
 import com.fazecast.jSerialComm.SerialPort;
 import input.InputHandler;
 import input.ReadHandler;
-import lombok.extern.log4j.Log4j2;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import static com.fazecast.jSerialComm.SerialPort.*;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class COMWrapper implements ComPort {
@@ -27,8 +30,20 @@ public class COMWrapper implements ComPort {
 
     public COMWrapper() throws CommunicationException {
         port = findPort();
+
+        boolean success = port.openPort();
+        if (!success)
+            throw new CommunicationException("Could not open port");
+        log.info("Port opened");
+
+        port.setComPortParameters(BaudRate.RATE_115200.getBaud(), 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
+
         printPortInformation();
-        setup();
+
+        outputStream = port.getOutputStream();
+        inputStream = port.getInputStream();
+
+        createInputThread();
     }
 
     private static SerialPort findPort() throws CommunicationException {
@@ -41,21 +56,6 @@ public class COMWrapper implements ComPort {
 
     private void printPortInformation() {
         log.info("Port found:\n\tName: {}\n\tBaud rate: {}", port.getDescriptivePortName(), port.getBaudRate());
-    }
-
-    private void setup() throws CommunicationException {
-        boolean success = port.openPort();
-        if (!success)
-            throw new CommunicationException("Could not open port");
-
-        log.info("Port opened");
-
-        port.setComPortParameters(DEFAULT_BAUD.getBaud(), 8, SerialPort.ONE_STOP_BIT, SerialPort.NO_PARITY);
-
-        outputStream = port.getOutputStream();
-        inputStream = port.getInputStream();
-
-        createInputThread();
     }
 
     private void createInputThread() {

@@ -17,7 +17,7 @@ public class InputEvent {
     }
 
     boolean visit(byte b) {
-        if (keys.length == 0 || Arrays.binarySearch(keys, b) != -1) {
+        if (keys.length == 0 || Arrays.binarySearch(keys, b) >= 0) {
             action.accept(b);
             return true;
         }

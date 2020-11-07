@@ -1,10 +1,11 @@
 package api.util;
 
+import com.CommunicationException;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.RemovalListener;
-
 import java.util.function.Consumer;
+import util.ThrowingConsumer;
 
 public class RollingID<T extends RollingEntity> {
 
@@ -35,6 +36,19 @@ public class RollingID<T extends RollingEntity> {
 
         creationAction.accept(id);
 
+        return addEntity(entity, id);
+    }
+
+    public T registerFileUpload(ThrowingConsumer<Byte, CommunicationException> creationAction, T entity)
+        throws CommunicationException {
+        byte id = getNextAvailableId();
+
+        creationAction.accept(id);
+
+        return addEntity(entity, id);
+    }
+
+    private T addEntity(T entity, byte id) {
         entities.put(id, entity);
         entityCount++;
         entity.setId(id);

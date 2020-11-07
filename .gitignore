@@ -21,3 +21,13 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+lib/mtx-ftdi-2.12.28-1/
+lib/ui.png
+mtx-ftdi-2.12.28-1/
+target/generated-sources/

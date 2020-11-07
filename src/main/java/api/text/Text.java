@@ -18,7 +18,7 @@ public class Text extends Commander {
     private final Cursor cursor = new Cursor(this);
 
     private final RollingID<TextWindow> textWindows = new RollingID<>(16);
-    private RollingID<Label> labels = new RollingID<>(16);
+    private final RollingID<Label> labels = new RollingID<>(16);
 
     public Text(Commander parent) {
         super(parent);
@@ -38,8 +38,8 @@ public class Text extends Commander {
      * @return Byte(s) Width and height of the string in pixels. A width greater than the screen will return 0.
      */
     public Dimension getStringExtents(String text) throws CommunicationException {
-        Future<Byte> width = getInput().expect();
-        Future<Byte> height = getInput().expect();
+        Future<Byte> width = getInput().nextByte();
+        Future<Byte> height = getInput().nextByte();
 
         send(TextCommands.getStringExtents(text));
         try {

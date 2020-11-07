@@ -37,7 +37,7 @@ public class Menu {
         this.input = input;
     }
 
-    public void show(String titleText, String... options) throws CommunicationException {
+    public int prompt(String titleText, String... options) throws CommunicationException {
         assert options.length >= 2 : "What's the point of a menu otherwise?";
 
         Label title = createLabel(titleText, 1, 1);
@@ -74,6 +74,7 @@ public class Menu {
 
             final byte up = input.vk_up();
             final byte down = input.vk_down();
+            final byte ok = input.vk_down();
 
             Future<Byte> keyEvent = input.expect(up, down);
             Byte key = null;
@@ -97,9 +98,7 @@ public class Menu {
     private Label createLabel(String text, int xLeft, int yTop) throws CommunicationException {
         Dimension dimension = textApi.getStringExtents(text);
         int yBottom = yTop + dimension.height;
-        Label label = dimension.width + xLeft <= Display.WIDTH && dimension.width != 0
-                ? textApi.createNewLabel(xLeft, yTop, MAX_WIDTH, yBottom, VertPos.TOP, HorPos.LEFT, null, false, 0)
-                : textApi.createNewScrollingLabel(xLeft, yTop, MAX_WIDTH, yBottom, VertPos.TOP, Direction.LEFT, null, false, 0, 20);
+        Label label = textApi.createNewLabel(xLeft, yTop, MAX_WIDTH, yBottom, VertPos.TOP, HorPos.LEFT, null, false, 0);
         label.setText(text);
         return label;
     }

@@ -1,23 +1,21 @@
 import api.API;
 import api.Commander;
-import api.communication.BaudRate;
+import api.bitmap.Bitmap;
+import api.bitmap.BitmapData;
 import api.communication.HardwareControlFlowTriggerLevel;
 import api.display.Display;
-import api.text.Cursor;
 import com.COMWrapper;
 import com.CommunicationException;
 import input.InputEventHandler;
-import lombok.extern.log4j.Log4j2;
-import ui.Menu;
-import util.StringUtil;
-
-import java.awt.*;
+import java.awt.Color;
+import java.io.File;
 import java.io.IOException;
+import javax.imageio.ImageIO;
+import lombok.extern.log4j.Log4j2;
+import util.StringUtil;
 
 @Log4j2
 public class Communicator {
-
-    private static final BaudRate BAUD_RATE = BaudRate.RATE_115200;
 
     private final API api;
     private final InputEventHandler input;
@@ -47,11 +45,8 @@ public class Communicator {
 //        comWrapper.resetBaudRate();
 //        run(resetLCD());
 
-//        run(setBaudRate(BAUD_RATE));
-//        comWrapper.setBaudRate(BAUD_RATE.getBaud());
-//        log.info("Set baud rate to " + BAUD_RATE.getBaud());
-
-//        comWrapper.setReadHandler(input);
+//        api.communication().changeBaudRate(BaudRate.RATE_115200);
+//        log.info("Set baud rate to " + BaudRate.RATE_115200.getBaud());
     }
 
     public void test() throws CommunicationException {
@@ -63,7 +58,19 @@ public class Communicator {
 
         api.drawing().clear();
 
+        try {
+//            api.bitmaps().drawBitmapDirectly(0, 0,
+//                new BitmapData(ImageIO.read(new File("images/sexy_woman.bmp")))
+//            );
+            Bitmap bitmap = api.bitmaps().createBitmap(new BitmapData(ImageIO.read(new File("images/sexy_woman.bmp"))));
 
+            for (int x = 0; x <= 128; x += 64) {
+                bitmap.draw(x, 0);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 //        Label label = api.text().createNewLabel(1, 1, 192, 64, VertPos.MIDDLE, HorPos.MIDDLE, null, false, 1);
 //        label.setText("Dag Selina");
@@ -74,18 +81,16 @@ public class Communicator {
 //            cursor.write(Character.toString(((char) i)));
 //        }
 
-        Menu menu = new Menu(api, input);
-        menu.show("Welcome to my first menu!",
-                "First option",
-                "Second option",
-                "Third one",
-//                "This one is super super long and won't fit on the screen at once",++
-                "Fourth option",
-                "Fifth",
-                "Sixth",
-                "Seventh",
-                "Eighth");
-
+//        Menu menu = new Menu(api, input);
+//        menu.prompt("Welcome to my first menu!",
+//            "First option",
+//            "Second option",
+//            "Third one",
+//            "Fourth option",
+//            "Fifth",
+//            "Sixth",
+//            "Seventh",
+//            "Eighth");
 
 //        api.drawing().drawer().ellipse(96, 32, 95, 31).filled(true).draw();
 
@@ -126,7 +131,6 @@ public class Communicator {
 //
 //        }
 
-
 //        run(setLed(VertPos.BOTTOM, LedState.OFF));
 //        run(setLed(VertPos.MIDDLE, LedState.OFF));
 //        run(setLed(VertPos.TOP, LedState.OFF));
@@ -140,7 +144,7 @@ public class Communicator {
 //
 //        run(createLabel(3, 10,  10, 60, 50,  VertPos.MIDDLE, HorPos.MIDDLE, 0,  false, 0));
 //        run(updateLabel(3, "CPU"));
-//
+
 //        MusicPlayer musicPlayer = api.buzzer().getMusicPlayer();
 //        musicPlayer.playMidi("F:\\Libraries\\Music\\MIDI\\Downloads\\Comptine d un autre été (Kyle Landry).mid", 2f);
 //        musicPlayer.playMidi("F:\\Libraries\\Music\\MIDI\\strauss-the-blue-danube.mid", 1f);
@@ -149,14 +153,17 @@ public class Communicator {
 //        int delay = 500;
 //        int f0 = 440;
 //        int f1 = 523;
-////        int f1 = 880;
 //
-//        for (float polyTime = 50; polyTime > 1; polyTime /= 1.01) {
-//            int round = Math.round(polyTime);
-//            api.buzzer().activate(f0, round);
-//            Thread.sleep(round);
-//            api.buzzer().activate(f1, round);
-//            Thread.sleep(round);
+//        try {
+//            for (float polyTime = 50; polyTime > 1; polyTime /= 1.01) {
+//                int round = Math.round(polyTime);
+//                api.buzzer().activate(f0, round);
+//                Thread.sleep(round);
+//                api.buzzer().activate(f1, round);
+//                Thread.sleep(round);
+//            }
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
 //        }
 //
 //

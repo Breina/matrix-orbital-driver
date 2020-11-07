@@ -32,7 +32,7 @@ public class BitmapData {
 
         for (int y = 0; y < height; y++)
             for (int x = 0; x < width; x++)
-                data[x][y] = bufferedImage.getRGB(x, y) != 0;
+                data[x][y] = bufferedImage.getRGB(x, y) == -1;
     }
 
     public void setOn(int x, int y) {
@@ -64,11 +64,11 @@ public class BitmapData {
     }
 
     private boolean next(AtomicInteger x, AtomicInteger y) {
-        if (y.incrementAndGet() >= height)
-            return false;
-
-        if (x.incrementAndGet() >= width)
+        if (x.incrementAndGet() >= width) {
+            if (y.incrementAndGet() >= height)
+                return false;
             x.set(0);
+        }
 
         return data[x.get()][y.get()];
     }

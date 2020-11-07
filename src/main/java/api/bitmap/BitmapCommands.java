@@ -7,9 +7,9 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 class BitmapCommands extends AbstractCommands {
 
-    byte[] uploadBitmapFile(int id, byte[] bitmapData) {
+    byte[] uploadBitmapFile(int id, int size) {
         checkRange(id, 0, 1023);
-        return Bytes.concat(chain("5E",  id, 2, bitmapData.length, 4), bitmapData);
+        return Bytes.concat(chain("5E",  id, 2, size, 4));
     }
 
     byte[] uploadBitmapMask(int id, byte[] maskData) {

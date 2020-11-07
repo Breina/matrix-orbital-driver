@@ -1,5 +1,7 @@
 package api.communication;
 
+import static api.communication.CommunicationCommands.*;
+
 import api.Commander;
 import com.ComPort;
 import commands.Util;
@@ -73,7 +75,7 @@ public class Communication extends Commander {
      * Disables all forms of flow control.
      */
     public void disableControlFlow() {
-        send(CommunicationCommands.setFlowControlMode(ControlFlowMode.NONE));
+        send(setFlowControlMode(ControlFlowMode.NONE));
         comPort.useHardwareControlFlow(false);
     }
 
@@ -84,8 +86,8 @@ public class Communication extends Commander {
      * @param triggerLevel Trigger level.
      */
     public void enableHardwareControlFlow(HardwareControlFlowTriggerLevel triggerLevel) {
-        send(CommunicationCommands.setFlowControlMode(ControlFlowMode.HARDWARE));
-        send(CommunicationCommands.setHardwareFlowControlTriggerLevel(triggerLevel));
+        send(setFlowControlMode(ControlFlowMode.HARDWARE));
+        send(setHardwareFlowControlTriggerLevel(triggerLevel));
 
         comPort.useHardwareControlFlow(true);
     }
@@ -97,7 +99,7 @@ public class Communication extends Commander {
      */
     public SoftwareControlFlow enableSoftwareControlFlow() {
         checkI2CProtocol();
-        send(CommunicationCommands.setFlowControlMode(ControlFlowMode.SOFTWARE));
+        send(setFlowControlMode(ControlFlowMode.SOFTWARE));
         comPort.useHardwareControlFlow(false);
 
         return getSoftwareControlFlow();
